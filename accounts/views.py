@@ -3,14 +3,20 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .serializers import UsersSerializer ,CreateUsersSerializer
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated , IsAdminUser
 
 class AllUsers(APIView):
+    permission_classes = [IsAuthenticated,IsAdminUser]
 
     def get(self,request):
         users = User.objects.all()
         ser_obj = UsersSerializer(instance=users,many=True)
         return Response(ser_obj.data)
     
+
+
+
+class RegisterUser(APIView):
     def post (self,request):
         ser_obj = CreateUsersSerializer(data=request.POST)
         if ser_obj.is_valid():
