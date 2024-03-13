@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework.response import Response
+from .models import Question,Answer
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -49,3 +49,19 @@ class CreateUsersSerializer(serializers.ModelSerializer):
         return value
     
 
+class QuestionSerialzer(serializers.ModelSerializer):
+
+    answer = serializers.SerializerMethodField()
+    class Meta :
+        model = Question
+        fields = '__all__'
+
+    def get_answer(self,obj):
+        answers_obj = obj.answers.all()
+        return AnswerSerialzer(instance=answers_obj,many=True).data
+
+
+class AnswerSerialzer(serializers.ModelSerializer):
+    class Meta :
+        model = Answer
+        fields = '__all__'
