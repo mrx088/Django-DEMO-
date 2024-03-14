@@ -5,6 +5,7 @@ from .serializers import UsersSerializer ,CreateUsersSerializer,QuestionSerialze
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from .models import Question,Answer
+from permisssions import AccessQuestionPermission
 
 class AllUsers(APIView):
     permission_classes = [IsAuthenticated,IsAdminUser]
@@ -35,6 +36,8 @@ class AllQuestion(APIView):
 
 
 class CreateQuestion(APIView):
+
+
     def post(self,request):
         srz_data = QuestionSerialzer(data=request.POST)
         if srz_data.is_valid():
@@ -44,8 +47,11 @@ class CreateQuestion(APIView):
     
 
 class UpdateQuestion(APIView):
+    permission_classes = [AccessQuestionPermission]
+
     def put(self,request,pk):
         question = Question.objects.get(pk=pk)
+        self.check_object_permissions(request,question)
         srz_data = QuestionSerialzer(data=request.data,instance=question,partial=True)
         if srz_data.is_valid():
             srz_data.save()

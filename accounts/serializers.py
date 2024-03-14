@@ -49,9 +49,24 @@ class CreateUsersSerializer(serializers.ModelSerializer):
         return value
     
 
+
+
+
+
+
+# Start Custom Related 
+
+class CustomRelated(serializers.RelatedField):
+    def to_representation(self, value):
+        return f'username is : {value.username}'
+    
+# END Custom Related 
+
+
 class QuestionSerialzer(serializers.ModelSerializer):
 
     answer = serializers.SerializerMethodField()
+    user = CustomRelated(read_only = True)
     class Meta :
         model = Question
         fields = '__all__'
